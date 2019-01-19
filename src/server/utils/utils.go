@@ -3,13 +3,12 @@ package utils
 import (
 	"encoding/json"
 	"net/http"
-	"strconv"
 )
 
 //IsOriginValid .
 func IsOriginValid(writer http.ResponseWriter, reader *http.Request) bool {
-	origin := reader.Header.Get("Origin") + ":" + strconv.Itoa(5000)
-	host := "localhost:5000"
+	origin := reader.Header.Get("Origin")
+	host := "http://localhost:3000"
 
 	if origin != host {
 		if writer != nil {

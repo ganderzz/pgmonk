@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"github/com/ganderzz/pgmonk/src/utils"
+	"github/com/ganderzz/pgmonk/src/server/utils"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -53,6 +53,8 @@ func handleGetUsers(writer http.ResponseWriter, reader *http.Request) {
 		return
 	}
 
+	setCors(writer, reader)
+
 	if reader.Method != "GET" {
 		http.Error(writer, "Method not GET", http.StatusBadRequest)
 		return
@@ -87,6 +89,8 @@ func handleWriteUsers(writer http.ResponseWriter, reader *http.Request) {
 		return
 	}
 
+	setCors(writer, reader)
+
 	if reader.Method != "POST" {
 		http.Error(writer, "Method not POST", http.StatusBadRequest)
 		return
@@ -117,6 +121,20 @@ func handleWriteUsers(writer http.ResponseWriter, reader *http.Request) {
 
 	if err != nil {
 		fmt.Printf("ERROR: %s", err.Error())
+		return
+	}
+}
+
+func setCors(writer http.ResponseWriter, reader *http.Request) {
+	writer.Header().Set("Access-Control-Allow-Origin", "*")
+	writer.Header().Set("Access-Control-Allow-Methods", "*")
+	writer.Header().Set("Access-Control-Allow-Headers", "*")
+	writer.Header().Set("Access-Control-Allow-Credentials", "*")
+	writer.Header().Set("Access-Control-Expose-Headers", "*")
+
+	if reader.Method == "OPTIONS" {
+		writer.WriteHeader(http.StatusOK)
+		writer.Write(nil)
 		return
 	}
 }

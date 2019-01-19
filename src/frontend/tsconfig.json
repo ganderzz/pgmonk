@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "target": "es2015",
+    "module": "commonjs",
+    "allowJs": true,
+    "jsx": "react",
+
+    "strict": true,
+
+    "types": [
+      "react",
+      "react-dom",
+      "jest"
+    ],
+    "allowSyntheticDefaultImports": true,
+
+    "experimentalDecorators": true,
+    "alwaysStrict": true,
+    "strictNullChecks": true,
+    "pretty": true
+  }
+}
