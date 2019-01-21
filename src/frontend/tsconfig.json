@@ -10,13 +10,15 @@
     "types": [
       "react",
       "react-dom",
-      "jest"
+      "jest",
+      "node"
     ],
     "allowSyntheticDefaultImports": true,
 
     "experimentalDecorators": true,
     "alwaysStrict": true,
     "strictNullChecks": true,
+    "noImplicitAny": false,
     "pretty": true
   }
 }

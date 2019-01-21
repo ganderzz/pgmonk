@@ -1,3 +1,5 @@
+import { IPostgresInfo } from "../Interfaces/IPostgresInfo";
+
 class API {
   private fetch: <T>(url: string, options?: RequestInit) => Promise<T>;
 
@@ -10,32 +12,15 @@ class API {
         ...(options || {}),
       }).then(response => {
         if (response.ok) {
-          const contentLength = parseInt(
-            response.headers.get("Content-Length")!,
-            10
-          );
-          if (contentLength > 0) {
-            return response.json();
-          }
-
-          return;
+          return response.json();
         }
 
         return Promise.reject(response.text());
       });
   }
 
-  public getUsers = () => {
-    return this.fetch<{ ID: number; Name: string }[]>("", { method: "GET" });
-  };
-
-  public createUser = (name: string) => {
-    return this.fetch<void>("write", {
-      method: "POST",
-      body: JSON.stringify({
-        Name: name,
-      }),
-    });
+  public getPostgresInfo = () => {
+    return this.fetch<IPostgresInfo[]>("info", { method: "GET" });
   };
 }
 

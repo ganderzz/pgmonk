@@ -4,6 +4,7 @@ const path = require("path");
 const newOptions = {
   devServer: {
     publicPath: "/",
+    historyApiFallback: true,
     headers: {
       "Access-Control-Allow-Origin": "*",
     },

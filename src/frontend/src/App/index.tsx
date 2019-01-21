@@ -1,54 +1,66 @@
 import * as React from "react";
-import { Container, Navbar, NavbarBrand } from "reactstrap";
+import {
+  Container,
+  Navbar,
+  NavbarBrand,
+  Nav,
+  NavItem,
+  NavLink,
+} from "reactstrap";
 import { Router, Link } from "@reach/router";
-import { HTTP } from "./utils/API";
-import { Main } from "./Pages/main";
+import Main from "./Pages/main";
 
-interface IState {
-  data: { ID: number; Name: string }[];
-  inputValue: string;
-}
+const isPartiallyActive = ({ isPartiallyCurrent }) => {
+  return isPartiallyCurrent
+    ? {
+        style: {
+          color: "#FFF",
+          borderBottom: "4px solid #45a2ff",
+          padding: 12,
+        },
+      }
+    : {
+        style: {
+          color: "#FFF",
+          padding: 12,
+        },
+      };
+};
 
-export default class App extends React.Component {
-  public readonly state: IState = {
-    data: [],
-    inputValue: "",
-  };
+export default function App() {
+  return (
+    <section>
+      <Navbar color="dark" style={{ color: "#FFF", padding: 0 }} expand="md">
+        <NavbarBrand style={{ padding: ".5rem 1rem" }}>
+          <h4 style={{ margin: 0 }}>PgMonk</h4>
+        </NavbarBrand>
 
-  public componentDidMount() {
-    this.loadData();
-  }
+        <Nav className="ml-auto" navbar>
+          <NavItem>
+            <NavLink
+              tag={Link}
+              getProps={isPartiallyActive}
+              to="/active-queries"
+            >
+              Active Queries
+            </NavLink>
+          </NavItem>
 
-  private loadData = () => {
-    HTTP.getUsers().then((data: IState["data"]) => {
-      this.setState({
-        data,
-      });
-    });
-  };
+          <NavItem>
+            <NavLink tag={Link} getProps={isPartiallyActive} to="/other">
+              Other
+            </NavLink>
+          </NavItem>
+        </Nav>
+      </Navbar>
 
-  private createUser = () => {
-    HTTP.createUser(this.state.inputValue).then(() => {
-      this.setState({ inputValue: "" });
-      this.loadData();
-    });
-  };
-
-  public render() {
-    return (
-      <section>
-        <Navbar color="dark" style={{ color: "#FFF" }} expand="md">
-          <NavbarBrand>
-            <h4 style={{ margin: 0 }}>PgMonk</h4>
-          </NavbarBrand>
-        </Navbar>
-
-        <Container style={{ marginTop: 20 }}>
+      <Container style={{ marginTop: 20 }}>
+        <React.Suspense fallback="Loading...">
           <Router>
-            <Main path="/" />
+            <Main path="/active-queries" />
           </Router>
-        </Container>
-      </section>
-    );
-  }
+        </React.Suspense>
+      </Container>
+    </section>
+  );
 }
