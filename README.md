@@ -19,6 +19,6 @@ Frontend:
 
 #### Current Stack
 
-Golang
-React - Javascript
-Postgres
+- Golang
+- React - Javascript
+- Postgres

@@ -9,4 +9,5 @@ export interface IPostgresInfo {
   Client_Addr: string | null;
   Client_Hostname: string | null;
   Client_Port: number | null;
+  Blocked_By: number[];
 }

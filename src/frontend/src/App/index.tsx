@@ -7,11 +7,12 @@ import {
   NavItem,
   NavLink,
 } from "reactstrap";
+const { Spinner } = require("reactstrap");
 import { Router, Link } from "@reach/router";
 import Main from "./Pages/main";
 
-const isPartiallyActive = ({ isPartiallyCurrent }) => {
-  return isPartiallyCurrent
+const isPartiallyActive = ({ isCurrent }) => {
+  return isCurrent
     ? {
         style: {
           color: "#FFF",
@@ -32,17 +33,15 @@ export default function App() {
     <section>
       <Navbar color="dark" style={{ color: "#FFF", padding: 0 }} expand="md">
         <NavbarBrand style={{ padding: ".5rem 1rem" }}>
-          <h4 style={{ margin: 0 }}>PgMonk</h4>
+          <Link to="/" style={{ color: "#FFF", textDecoration: "none" }}>
+            <h4 style={{ margin: 0 }}>PgMonk</h4>
+          </Link>
         </NavbarBrand>
 
         <Nav className="ml-auto" navbar>
           <NavItem>
-            <NavLink
-              tag={Link}
-              getProps={isPartiallyActive}
-              to="/active-queries"
-            >
-              Active Queries
+            <NavLink tag={Link} getProps={isPartiallyActive} to="/">
+              Dashboard
             </NavLink>
           </NavItem>
 
@@ -55,9 +54,9 @@ export default function App() {
       </Navbar>
 
       <Container style={{ marginTop: 20 }}>
-        <React.Suspense fallback="Loading...">
+        <React.Suspense fallback={<Spinner style={{ marginTop: 10 }} />}>
           <Router>
-            <Main path="/active-queries" />
+            <Main path="/" />
           </Router>
         </React.Suspense>
       </Container>

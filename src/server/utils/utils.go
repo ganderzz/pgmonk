@@ -23,7 +23,7 @@ func IsOriginValid(writer http.ResponseWriter, reader *http.Request) bool {
 
 //WriteJSON .
 func WriteJSON(writer http.ResponseWriter, obj interface{}) {
-	js, err := json.Marshal(obj)
+	json, err := json.Marshal(obj)
 
 	if err != nil {
 		http.Error(writer, err.Error(), http.StatusInternalServerError)
@@ -31,7 +31,7 @@ func WriteJSON(writer http.ResponseWriter, obj interface{}) {
 	}
 
 	writer.Header().Set("Content-Type", "application/json")
-	writer.Write(js)
+	writer.Write(json)
 }
 
 //SetCors .

@@ -1,9 +1,9 @@
 import * as React from "react";
-import { Row, Col, Button, Badge } from "reactstrap";
+import { Row, Col, Button } from "reactstrap";
 import { HTTP } from "../../utils/API";
 import { IPostgresInfo } from "../../utils/Interfaces/IPostgresInfo";
-import { Code } from "../../Components/Code";
-import { Heading } from "../../Components/Heading";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { QueryCard } from "./Components/QueryCard";
 
 interface IProps {
   path?: string;
@@ -24,6 +24,12 @@ export function useUsers() {
 
   React.useEffect(() => {
     getPostgresInfo();
+
+    const id = setInterval(() => {
+      getPostgresInfo();
+    }, 20000);
+
+    return () => clearInterval(id);
   }, []);
 
   return {
@@ -41,92 +47,16 @@ export default function Main(props: IProps) {
       <Col xs={12}>
         <Button
           onClick={getPostgresInfo}
-          style={{ marginTop: 10 }}
+          style={{ marginTop: 10, marginBottom: 30 }}
           disabled={isLoading}
         >
+          <FontAwesomeIcon icon="sync" spin={isLoading} />{" "}
           {isLoading ? "Refreshing..." : "Refresh"}
         </Button>
 
+        <h3>Active Queries</h3>
         {info &&
-          info.map(item => (
-            <div
-              style={{
-                marginTop: 20,
-                marginBottom: 20,
-                padding: 20,
-                borderRadius: 4,
-                borderTop: "2px solid #3483d1",
-                boxShadow: "1px 2px 15px rgba(130, 130, 130, 0.3)",
-              }}
-              key={item.Pid}
-            >
-              <Row>
-                <Col xs={6}>
-                  <Badge
-                    size="sm"
-                    style={{ position: "relative", bottom: 4 }}
-                    title="PID"
-                  >
-                    {item.Pid}
-                  </Badge>{" "}
-                  <h4
-                    style={{
-                      display: "inline-block",
-                      marginLeft: 5,
-                      marginBottom: 0,
-                    }}
-                    title="Application Name"
-                  >
-                    {item.Application_Name ? (
-                      item.Application_Name
-                    ) : (
-                      <em>No Application Name</em>
-                    )}
-                  </h4>
-                </Col>
-
-                <Col xs={6} style={{ textAlign: "right" }}>
-                  <Badge
-                    color={item.State === "active" ? "success" : "warning"}
-                    title="Query State"
-                  >
-                    {item.State}
-                  </Badge>
-                </Col>
-              </Row>
-              <Row style={{ marginTop: 25 }}>
-                <Col xs={4}>
-                  <Heading heading="Database" indicateEmpty>
-                    {item.Datname}
-                  </Heading>
-                </Col>
-                <Col xs={4}>
-                  <Heading heading="User" indicateEmpty>
-                    {item.Usename}
-                  </Heading>
-                </Col>
-              </Row>
-              <Row style={{ marginTop: 15 }}>
-                <Col xs={4}>
-                  <Heading heading="Client Host" indicateEmpty>
-                    {item.Client_Hostname}
-                  </Heading>
-                </Col>
-                <Col xs={4}>
-                  <Heading heading="Client Address" indicateEmpty>
-                    {item.Client_Addr}
-                  </Heading>
-                </Col>
-                <Col xs={4}>
-                  <Heading heading="Client Port" indicateEmpty>
-                    {item.Client_Port}
-                  </Heading>
-                </Col>
-              </Row>
-
-              <Code style={{ marginTop: 25 }}>{item.Query}</Code>
-            </div>
-          ))}
+          info.map(item => <QueryCard key={item.Pid} queryData={item} />)}
       </Col>
     </Row>
   );

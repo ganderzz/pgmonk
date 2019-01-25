@@ -5,12 +5,28 @@ import (
 	"fmt"
 	"github/com/ganderzz/pgmonk/src/server/utils"
 	"net/http"
+	"strings"
 
 	null "gopkg.in/guregu/null.v3"
 )
 
 //ConnectionString .
 var ConnectionString string
+
+type BlockedBy struct {
+	Array []uint8
+}
+
+func (bb *BlockedBy) MarshalJSON() ([]byte, error) {
+	var array string
+	if bb.Array == nil {
+		array = "null"
+	} else {
+		array = strings.Join(strings.Fields(fmt.Sprintf("%d", bb.Array)), ",")
+	}
+	jsonResult := fmt.Sprintf(`[%s]`, array)
+	return []byte(jsonResult), nil
+}
 
 // PostgresInfo .
 type PostgresInfo struct {
@@ -24,6 +40,8 @@ type PostgresInfo struct {
 	Client_Addr      null.String
 	Client_Hostname  null.String
 	Client_Port      null.Int
+	Blocked_By       *BlockedBy
+	blockedBy        []uint8
 }
 
 func parseInfoColumns(name string, item *PostgresInfo) interface{} {
@@ -48,6 +66,9 @@ func parseInfoColumns(name string, item *PostgresInfo) interface{} {
 		return &item.Client_Hostname
 	case "client_port":
 		return &item.Client_Port
+	case "blocked_by":
+		item.Blocked_By = &BlockedBy{Array: item.blockedBy}
+		return &item.blockedBy
 
 	default:
 		panic("Unknown column provided")
@@ -108,7 +129,8 @@ func GetPostgresInfoController(writer http.ResponseWriter, reader *http.Request)
 			state,
 			client_addr,
 			client_hostname,
-			client_port
+			client_port,
+			pg_blocking_pids(pid) as blocked_by
 		FROM pg_stat_activity
 		WHERE backend_type = 'client backend'
 		ORDER BY query_start DESC NULLS LAST`)
