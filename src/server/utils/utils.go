@@ -2,7 +2,10 @@ package utils
 
 import (
 	"encoding/json"
+	"fmt"
+	"io/ioutil"
 	"net/http"
+	"os"
 )
 
 //IsOriginValid .
@@ -47,4 +50,26 @@ func SetCors(writer http.ResponseWriter, reader *http.Request) {
 		writer.Write(nil)
 		return
 	}
+}
+
+//GetMostRecentFileInDir .
+func GetMostRecentFileInDir(dirPath string) (os.FileInfo, error) {
+	files, err := ioutil.ReadDir(dirPath)
+
+	if err != nil {
+		fmt.Printf("ERROR: %s", err.Error())
+		return nil, err
+	}
+
+	var recentLog os.FileInfo
+
+	for _, file := range files {
+		if recentLog == nil {
+			recentLog = file
+		} else if recentLog.ModTime().Before(file.ModTime()) {
+			recentLog = file
+		}
+	}
+
+	return recentLog, nil
 }

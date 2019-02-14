@@ -13,10 +13,12 @@ import (
 //ConnectionString .
 var ConnectionString string
 
+// BlockedBy struct
 type BlockedBy struct {
 	Array []uint8
 }
 
+//MarsalJSON transform BlockedBy to JSON object
 func (bb *BlockedBy) MarshalJSON() ([]byte, error) {
 	var array string
 	if bb.Array == nil {
@@ -30,18 +32,18 @@ func (bb *BlockedBy) MarshalJSON() ([]byte, error) {
 
 // PostgresInfo .
 type PostgresInfo struct {
-	Datid            null.Int
-	Datname          null.String
-	Pid              null.Int
-	Usename          null.String
-	Query            null.String
-	State            null.String
-	Application_Name null.String
-	Client_Addr      null.String
-	Client_Hostname  null.String
-	Client_Port      null.Int
-	Blocked_By       *BlockedBy
-	blockedBy        []uint8
+	Datid           null.Int    `json:"datid,omitempty"`
+	Datname         null.String `json:"datname,omitempty"`
+	Pid             null.Int    `json:"pid,omitempty"`
+	Usename         null.String `json:"username,omitempty"`
+	Query           null.String `json:"query,omitempty"`
+	State           null.String `json:"state,omitempty"`
+	ApplicationName null.String `json:"application_name,omitempty"`
+	ClientAddr      null.String `json:"client_address,omitempty"`
+	ClientHostname  null.String `json:"client_hostname,omitempty"`
+	ClientPort      null.Int    `json:"client_port,omitempty"`
+	BlockedBy       *BlockedBy  `json:"blocked_by,omitempty"`
+	blockedBy       []uint8
 }
 
 func parseInfoColumns(name string, item *PostgresInfo) interface{} {
@@ -59,15 +61,15 @@ func parseInfoColumns(name string, item *PostgresInfo) interface{} {
 	case "state":
 		return &item.State
 	case "application_name":
-		return &item.Application_Name
+		return &item.ApplicationName
 	case "client_addr":
-		return &item.Client_Addr
+		return &item.ClientAddr
 	case "client_hostname":
-		return &item.Client_Hostname
+		return &item.ClientHostname
 	case "client_port":
-		return &item.Client_Port
+		return &item.ClientPort
 	case "blocked_by":
-		item.Blocked_By = &BlockedBy{Array: item.blockedBy}
+		item.BlockedBy = &BlockedBy{Array: item.blockedBy}
 		return &item.blockedBy
 
 	default:
@@ -118,7 +120,14 @@ func GetPostgresInfoController(writer http.ResponseWriter, reader *http.Request)
 
 	defer db.Close()
 
-	rows, err := db.Query(`
+	query := reader.URL.Query()
+
+	backendType := query.Get("backend_type")
+
+	var rows *sql.Rows
+
+	if backendType == "" {
+		stmt, _ := db.Prepare(`
 		SELECT 
 			datid,
 			datname,
@@ -132,12 +141,38 @@ func GetPostgresInfoController(writer http.ResponseWriter, reader *http.Request)
 			client_port,
 			pg_blocking_pids(pid) as blocked_by
 		FROM pg_stat_activity
-		WHERE backend_type = 'client backend'
 		ORDER BY query_start DESC NULLS LAST`)
 
-	if err != nil {
-		fmt.Printf("ERROR: %s", err.Error())
-		return
+		if err != nil {
+			fmt.Printf("ERROR: %s", err.Error())
+			return
+		}
+
+		rows, _ = stmt.Query()
+	} else {
+		stmt, _ := db.Prepare(`
+		SELECT 
+			datid,
+			datname,
+			pid,
+			application_name,
+			usename,
+			query,
+			state,
+			client_addr,
+			client_hostname,
+			client_port,
+			pg_blocking_pids(pid) as blocked_by
+		FROM pg_stat_activity
+		WHERE backend_type = $1
+		ORDER BY query_start DESC NULLS LAST`)
+
+		if err != nil {
+			fmt.Printf("ERROR: %s", err.Error())
+			return
+		}
+
+		rows, _ = stmt.Query(backendType)
 	}
 
 	columns, err := rows.Columns()
@@ -154,4 +189,29 @@ func GetPostgresInfoController(writer http.ResponseWriter, reader *http.Request)
 	}
 
 	utils.WriteJSON(writer, p)
+}
+
+//GetPostgresLogsController .
+func GetPostgresLogsController(writer http.ResponseWriter, reader *http.Request) {
+	if !utils.IsOriginValid(writer, reader) {
+		return
+	}
+
+	utils.SetCors(writer, reader)
+
+	if reader.Method != "GET" {
+		http.Error(writer, "Method not GET", http.StatusBadRequest)
+		return
+	}
+
+	file, err := utils.GetMostRecentFileInDir("C:\\PostgreSQL\\data\\logs\\pg11")
+
+	if err != nil {
+		fmt.Printf("ERROR: %s", err.Error())
+		return
+	}
+
+	fmt.Printf("FILE: %s %s", file.Name(), file.ModTime())
+
+	//utils.WriteJSON(writer, p)
 }

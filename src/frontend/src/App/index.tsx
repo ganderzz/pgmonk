@@ -32,10 +32,16 @@ export default function App() {
   return (
     <section>
       <Navbar color="dark" style={{ color: "#FFF", padding: 0 }} expand="md">
-        <NavbarBrand style={{ padding: ".5rem 1rem" }}>
-          <Link to="/" style={{ color: "#FFF", textDecoration: "none" }}>
-            <h4 style={{ margin: 0 }}>PgMonk</h4>
-          </Link>
+        <NavbarBrand
+          tag={Link}
+          to="/"
+          style={{
+            padding: ".5rem 1rem",
+            color: "#FFF",
+            textDecoration: "none",
+          }}
+        >
+          <h4 style={{ margin: 0 }}>PgMonk</h4>
         </NavbarBrand>
 
         <Nav className="ml-auto" navbar>

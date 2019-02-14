@@ -4,33 +4,32 @@ import { HTTP } from "../../utils/API";
 import { IPostgresInfo } from "../../utils/Interfaces/IPostgresInfo";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { QueryCard } from "./Components/QueryCard";
+import { useInterval } from "../../Hooks/useInterval";
+import { toast } from "react-toastify";
 
 interface IProps {
   path?: string;
 }
 
-export function useUsers() {
+export function userPostgresInfoFetcher() {
   const [isLoading, setLoading] = React.useState(false);
   const [info, setInfo] = React.useState<IPostgresInfo[]>([]);
 
   function getPostgresInfo() {
     setLoading(true);
 
-    HTTP.getPostgresInfo().then(pgInfo => {
-      setInfo(pgInfo);
-      setLoading(false);
-    });
+    return HTTP.getPostgresInfo()
+      .then(pgInfo => {
+        setInfo(pgInfo);
+        setLoading(false);
+      })
+      .catch(response => {
+        setLoading(false);
+        toast.error(`${response}`);
+
+        return Promise.reject();
+      });
   }
-
-  React.useEffect(() => {
-    getPostgresInfo();
-
-    const id = setInterval(() => {
-      getPostgresInfo();
-    }, 20000);
-
-    return () => clearInterval(id);
-  }, []);
 
   return {
     info,
@@ -40,7 +39,22 @@ export function useUsers() {
 }
 
 export default function Main(props: IProps) {
-  const { info, getPostgresInfo, isLoading } = useUsers();
+  const { info, getPostgresInfo, isLoading } = userPostgresInfoFetcher();
+  const [isRunningPolling, setPolling] = React.useState(true);
+  // Call and load data on initial load
+  React.useEffect(() => {
+    getPostgresInfo();
+  }, []);
+
+  // Refresh page with data after X seconds
+  useInterval(
+    () => {
+      getPostgresInfo().catch(r => {
+        setPolling(false);
+      });
+    },
+    isRunningPolling ? 20_000 : null
+  );
 
   return (
     <Row>
@@ -54,9 +68,9 @@ export default function Main(props: IProps) {
           {isLoading ? "Refreshing..." : "Refresh"}
         </Button>
 
-        <h3>Active Queries</h3>
+        <h3>Recently Ran Queries</h3>
         {info &&
-          info.map(item => <QueryCard key={item.Pid} queryData={item} />)}
+          info.map(item => <QueryCard key={item.pid} queryData={item} />)}
       </Col>
     </Row>
   );

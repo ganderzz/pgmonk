@@ -1,4 +1,6 @@
 github.com/lib/pq v1.0.0 h1:X5PMW56eZitiTeO7tKzZxFCSpbFZJtkMMooicw2us9A=
 github.com/lib/pq v1.0.0/go.mod h1:5WUZQaWbwv1U+lTReE5YruASi9Al49XbQIvNi/34Woo=
+github.com/rapidloop/pgmetrics v1.5.1 h1:DNfU6Y76VrLQYeobKxinCQRpdcP1rWtQBOURpmTauwQ=
+github.com/rapidloop/pgmetrics v1.5.1/go.mod h1:gtUd7S9jUXA58pqgYhZtNgmPnG88C2yhpZd8kpS3DSI=
 gopkg.in/guregu/null.v3 v3.4.0 h1:AOpMtZ85uElRhQjEDsFx21BkXqFPwA7uoJukd4KErIs=
 gopkg.in/guregu/null.v3 v3.4.0/go.mod h1:E4tX2Qe3h7QdL+uZ3a0vqvYwKQsRSQKM5V4YltdgH9Y=
