@@ -72,8 +72,8 @@ func GetInfoFromLogs(fileData []byte) []LogInfo {
 
 	var temp []LogInfo
 
-	for _, v := range splitData[1:] {
-		splitRow := strings.Split(strings.Trim(v, " "), " ")
+	for i := 1; i < len(splitData)-1; i++ {
+		splitRow := strings.Split(strings.Trim(splitData[i], " "), " ")
 
 		var dateTime time.Time
 		var meta MetaLogInfo
@@ -86,7 +86,7 @@ func GetInfoFromLogs(fileData []byte) []LogInfo {
 			dateTime, _ = time.Parse("2006-01-02 15:04:05 MST", dateTimeString)
 		}
 
-		if len(splitRow) > 3 {
+		if len(splitRow) >= 4 {
 			pidString := strings.Trim(strings.Trim(splitRow[3], "["), "]")
 			pid, _ = strconv.Atoi(pidString)
 		}
@@ -94,11 +94,29 @@ func GetInfoFromLogs(fileData []byte) []LogInfo {
 		if len(splitRow) >= 5 {
 			csvMeta := strings.Split(splitRow[5], ",")
 
+			var user, db, app, client string
+
+			if len(csvMeta) > 0 {
+				user = strings.Split(csvMeta[0], "=")[1]
+			}
+
+			if len(csvMeta) > 1 {
+				user = strings.Split(csvMeta[1], "=")[1]
+			}
+
+			if len(csvMeta) > 2 {
+				user = strings.Split(csvMeta[2], "=")[1]
+			}
+
+			if len(csvMeta) > 3 {
+				user = strings.Split(csvMeta[3], "=")[1]
+			}
+
 			meta = MetaLogInfo{
-				User:   strings.Split(csvMeta[0], "=")[1],
-				DB:     strings.Split(csvMeta[1], "=")[1],
-				App:    strings.Split(csvMeta[2], "=")[1],
-				Client: strings.Split(csvMeta[3], "=")[1],
+				User:   user,
+				DB:     db,
+				App:    app,
+				Client: client,
 			}
 		}
 

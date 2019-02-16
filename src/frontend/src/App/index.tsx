@@ -9,7 +9,7 @@ import {
 } from "reactstrap";
 const { Spinner } = require("reactstrap");
 import { Router, Link } from "@reach/router";
-import Main from "./Pages/Main";
+import Dashboard from "./Pages/Dashboard";
 import Logs from "./Pages/Logs";
 
 const isPartiallyActive = ({ isCurrent }) => {
@@ -57,19 +57,13 @@ export default function App() {
               Logs
             </NavLink>
           </NavItem>
-
-          <NavItem>
-            <NavLink tag={Link} getProps={isPartiallyActive} to="/other">
-              Other
-            </NavLink>
-          </NavItem>
         </Nav>
       </Navbar>
 
       <Container style={{ marginTop: 20, maxWidth: "90%" }}>
         <React.Suspense fallback={<Spinner style={{ marginTop: 10 }} />}>
           <Router>
-            <Main path="/" />
+            <Dashboard path="/" />
             <Logs path="/logs" />
           </Router>
         </React.Suspense>

@@ -4,11 +4,11 @@ PgMonk is a Postgres monitoring tool
 
 **Objectives**
 
-- [] Show real-time queries execution
-- [] Show recent log output
-- [] Display any locks
-- [] Show slow queries, and missing indexes
-- [] Visualize requests/execution time/etc (graphs)
+- [ ] Show real-time queries execution
+- [ ] Show recent log output
+- [ ] Display any locks
+- [ ] Show slow queries, and missing indexes
+- [ ] Visualize requests/execution time/etc (graphs)
 
 #### How to Use
 
@@ -25,8 +25,6 @@ Frontend:
 - Run `yarn` or `npm install` to get all the dependencies
 - Run `yarn start` or `npm run start` to start the frontend server
 
-#### Current Stack
+#### Screenshots
 
-- Golang
-- React
-- Postgres
+![Dashboard Screenshot](./media/dashboard.PNG)
