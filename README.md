@@ -4,11 +4,11 @@ PgMonk is a Postgres monitoring tool
 
 **Objectives**
 
-[] Show real-time queries execution
-[] Show recent log output
-[] Display any locks
-[] Show slow queries, and missing indexes
-[] Visualize requests/execution time/etc (graphs)
+- [] Show real-time queries execution
+- [] Show recent log output
+- [] Display any locks
+- [] Show slow queries, and missing indexes
+- [] Visualize requests/execution time/etc (graphs)
 
 #### How to Use
 
