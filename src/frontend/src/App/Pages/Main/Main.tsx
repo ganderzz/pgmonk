@@ -11,14 +11,14 @@ interface IProps {
   path?: string;
 }
 
-export function userPostgresInfoFetcher() {
+export function usePostgresInfoFetcher() {
   const [isLoading, setLoading] = React.useState(false);
   const [info, setInfo] = React.useState<IPostgresInfo[]>([]);
 
   function getPostgresInfo() {
     setLoading(true);
 
-    return HTTP.getPostgresInfo()
+    return HTTP.getPostgresInfo({ backend_type: "client backend" })
       .then(pgInfo => {
         setInfo(pgInfo);
         setLoading(false);
@@ -39,7 +39,7 @@ export function userPostgresInfoFetcher() {
 }
 
 export default function Main(props: IProps) {
-  const { info, getPostgresInfo, isLoading } = userPostgresInfoFetcher();
+  const { info, getPostgresInfo, isLoading } = usePostgresInfoFetcher();
   const [isRunningPolling, setPolling] = React.useState(true);
   // Call and load data on initial load
   React.useEffect(() => {

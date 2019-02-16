@@ -3,7 +3,11 @@ package main
 import (
 	"fmt"
 	"github/com/ganderzz/pgmonk/src/server/controllers"
+	"log"
 	"net/http"
+	"time"
+
+	"github.com/gorilla/mux"
 
 	_ "github.com/lib/pq"
 )
@@ -15,10 +19,20 @@ const connectionString = "application_name=PgMonk user=postgres password=test db
 
 func main() {
 	controllers.ConnectionString = connectionString
-	http.HandleFunc("/info", controllers.GetPostgresInfoController)
-	http.HandleFunc("/logs", controllers.GetPostgresLogsController)
+
+	r := mux.NewRouter()
+
+	r.HandleFunc("/info", controllers.GetPostgresInfoController)
+	r.HandleFunc("/logs", controllers.GetPostgresLogsController)
 
 	fmt.Println("Starting on: http://localhost:5000")
 
-	http.ListenAndServe(":5000", nil)
+	server := &http.Server{
+		Handler:      r,
+		Addr:         "localhost:5000",
+		WriteTimeout: 15 * time.Second,
+		ReadTimeout:  15 * time.Second,
+	}
+
+	log.Fatal(server.ListenAndServe())
 }

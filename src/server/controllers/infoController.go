@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"github/com/ganderzz/pgmonk/src/server/utils"
+	"io/ioutil"
 	"net/http"
 	"strings"
 
@@ -211,7 +212,12 @@ func GetPostgresLogsController(writer http.ResponseWriter, reader *http.Request)
 		return
 	}
 
-	fmt.Printf("FILE: %s %s", file.Name(), file.ModTime())
+	data, err := ioutil.ReadFile("C:\\PostgreSQL\\data\\logs\\pg11\\" + file.Name())
 
-	//utils.WriteJSON(writer, p)
+	if err != nil {
+		fmt.Printf("ERROR: %s", err.Error())
+		return
+	}
+
+	utils.WriteJSON(writer, utils.GetInfoFromLogs(data))
 }
