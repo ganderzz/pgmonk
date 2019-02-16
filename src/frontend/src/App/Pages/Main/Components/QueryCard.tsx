@@ -23,7 +23,7 @@ export function QueryCard({ queryData }: IProps) {
         borderTop: "2px solid #3483d1",
         boxShadow: "1px 2px 15px rgba(130, 130, 130, 0.3)",
       }}
-      key={queryData.Pid}
+      key={queryData.pid}
     >
       <Row>
         <Col xs={6}>
@@ -47,7 +47,7 @@ export function QueryCard({ queryData }: IProps) {
             style={{ position: "relative", bottom: 2 }}
             title="PID"
           >
-            {queryData.Pid}
+            {queryData.pid}
           </Badge>{" "}
           <h4
             style={{
@@ -57,8 +57,8 @@ export function QueryCard({ queryData }: IProps) {
             }}
             title="Application Name"
           >
-            {queryData.Application_Name ? (
-              queryData.Application_Name
+            {queryData.application_name ? (
+              queryData.application_name
             ) : (
               <em>No Application Name</em>
             )}
@@ -67,17 +67,17 @@ export function QueryCard({ queryData }: IProps) {
 
         <Col xs={6} style={{ textAlign: "right" }}>
           <Badge
-            color={queryData.State === "active" ? "success" : "warning"}
+            color={queryData.state === "active" ? "success" : "warning"}
             title="Query State"
           >
-            {queryData.State}
+            {queryData.state}
           </Badge>
 
-          {queryData.Blocked_By &&
-            queryData.Blocked_By.filter(Boolean).length > 0 && (
+          {queryData.blocked_by &&
+            queryData.blocked_by.filter(Boolean).length > 0 && (
               <Badge color="danger" style={{ marginLeft: 5 }}>
                 <FontAwesomeIcon icon="lock" /> Locked By:{" "}
-                {queryData.Blocked_By}
+                {queryData.blocked_by}
               </Badge>
             )}
         </Col>
@@ -87,35 +87,35 @@ export function QueryCard({ queryData }: IProps) {
         <Row style={{ marginTop: 25 }}>
           <Col xs={4}>
             <Heading heading="Database" indicateEmpty>
-              {queryData.Datname}
+              {queryData.datname}
             </Heading>
           </Col>
           <Col xs={4}>
             <Heading heading="User" indicateEmpty>
-              {queryData.Usename}
+              {queryData.username}
             </Heading>
           </Col>
         </Row>
         <Row style={{ marginTop: 15 }}>
           <Col xs={4}>
             <Heading heading="Client Host" indicateEmpty>
-              {queryData.Client_Hostname}
+              {queryData.client_hostname}
             </Heading>
           </Col>
           <Col xs={4}>
             <Heading heading="Client Address" indicateEmpty>
-              {queryData.Client_Addr}
+              {queryData.client_address}
             </Heading>
           </Col>
           <Col xs={4}>
             <Heading heading="Client Port" indicateEmpty>
-              {queryData.Client_Port}
+              {queryData.client_port}
             </Heading>
           </Col>
         </Row>
 
         <Code style={{ marginTop: 25 }}>
-          {queryData.Query ? queryData.Query.trim() : "None"}
+          {queryData.query ? queryData.query.trim() : "None"}
         </Code>
       </Accordion>
     </div>

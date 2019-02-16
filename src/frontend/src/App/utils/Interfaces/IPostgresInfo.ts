@@ -1,13 +1,13 @@
 export interface IPostgresInfo {
-  Datid: number | null;
-  Datname: string | null;
-  Pid: number;
-  Usename: string | null;
-  Query: string | null;
-  State: string | null;
-  Application_Name: string | null;
-  Client_Addr: string | null;
-  Client_Hostname: string | null;
-  Client_Port: number | null;
-  Blocked_By: number[];
+  datid: number | null;
+  datname: string | null;
+  pid: number;
+  username: string | null;
+  query: string | null;
+  state: string | null;
+  application_name: string | null;
+  client_address: string | null;
+  client_hostname: string | null;
+  client_port: number | null;
+  blocked_by: number[];
 }

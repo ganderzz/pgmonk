@@ -1,4 +1,5 @@
 import { IPostgresInfo } from "../Interfaces/IPostgresInfo";
+import { IPostgresLog } from "../Interfaces/IPostgresLog";
 
 class API {
   private fetch: <T>(url: string, options?: RequestInit) => Promise<T>;
@@ -19,8 +20,39 @@ class API {
       });
   }
 
-  public getPostgresInfo = () => {
-    return this.fetch<IPostgresInfo[]>("info", { method: "GET" });
+  private static toQueryString(query?: { [key: string]: any }): string {
+    if (!query) {
+      return "";
+    }
+
+    // ?key=val&key=secondval
+    const queryString = Object.keys(query)
+      .map(key => {
+        const value = query[key];
+
+        if (!value) {
+          return "";
+        }
+
+        if (Array.isArray(value)) {
+          return `${key}=${value.map(p => encodeURIComponent(p)).join(",")}`;
+        }
+
+        return `${key}=${encodeURIComponent(value)}`;
+      })
+      .join("&");
+
+    return `?${queryString}`;
+  }
+
+  public getPostgresInfo = (query?: { backend_type: string }) => {
+    const queryString = API.toQueryString(query);
+
+    return this.fetch<IPostgresInfo[]>(`info${queryString}`, { method: "GET" });
+  };
+
+  public getPostgresLogs = () => {
+    return this.fetch<IPostgresLog[]>(`logs`, { method: "GET" });
   };
 }
 

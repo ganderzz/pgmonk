@@ -9,7 +9,8 @@ import {
 } from "reactstrap";
 const { Spinner } = require("reactstrap");
 import { Router, Link } from "@reach/router";
-import Main from "./Pages/main";
+import Main from "./Pages/Main";
+import Logs from "./Pages/Logs";
 
 const isPartiallyActive = ({ isCurrent }) => {
   return isCurrent
@@ -32,16 +33,28 @@ export default function App() {
   return (
     <section>
       <Navbar color="dark" style={{ color: "#FFF", padding: 0 }} expand="md">
-        <NavbarBrand style={{ padding: ".5rem 1rem" }}>
-          <Link to="/" style={{ color: "#FFF", textDecoration: "none" }}>
-            <h4 style={{ margin: 0 }}>PgMonk</h4>
-          </Link>
+        <NavbarBrand
+          tag={Link}
+          to="/"
+          style={{
+            padding: ".5rem 1rem",
+            color: "#FFF",
+            textDecoration: "none",
+          }}
+        >
+          <h4 style={{ margin: 0 }}>PgMonk</h4>
         </NavbarBrand>
 
         <Nav className="ml-auto" navbar>
           <NavItem>
             <NavLink tag={Link} getProps={isPartiallyActive} to="/">
               Dashboard
+            </NavLink>
+          </NavItem>
+
+          <NavItem>
+            <NavLink tag={Link} getProps={isPartiallyActive} to="/logs">
+              Logs
             </NavLink>
           </NavItem>
 
@@ -53,10 +66,11 @@ export default function App() {
         </Nav>
       </Navbar>
 
-      <Container style={{ marginTop: 20 }}>
+      <Container style={{ marginTop: 20, maxWidth: "90%" }}>
         <React.Suspense fallback={<Spinner style={{ marginTop: 10 }} />}>
           <Router>
             <Main path="/" />
+            <Logs path="/logs" />
           </Router>
         </React.Suspense>
       </Container>

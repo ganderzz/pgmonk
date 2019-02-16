@@ -7,13 +7,20 @@ import {
   faSync,
   faLock,
 } from "@fortawesome/free-solid-svg-icons";
+import App from "./App";
+import { ToastContainer } from "react-toastify";
 
 import "bootstrap/dist/css/bootstrap.min.css";
-
-import App from "./App";
+import "react-toastify/dist/ReactToastify.min.css";
 
 window.onload = () => {
   library.add(faChevronDown, faChevronUp, faSync, faLock);
 
-  render(<App />, document.getElementById("app"));
+  render(
+    <>
+      <App />
+      <ToastContainer position="bottom-left" />
+    </>,
+    document.getElementById("app")
+  );
 };
