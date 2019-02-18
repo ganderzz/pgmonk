@@ -4,23 +4,41 @@ import (
 	"github/com/ganderzz/pgmonk/src/server/utils"
 	"io/ioutil"
 	"net/http"
+	"time"
 )
+
+//LogInfoParent Postgres loginfo with the current datetime
+type LogInfoParent struct {
+	Data     []utils.LogInfo `json:"data,omitempty"`
+	DateTime time.Time       `json:"date_time,omitempty"`
+}
 
 //HandleGetLogs Get most recent postgres logs (Usually by day)
 func HandleGetLogs(w http.ResponseWriter, r *http.Request) {
-	file, err := utils.GetMostRecentFileInDir("C:\\PostgreSQL\\data\\logs\\pg11")
+	dir := "C:\\PostgreSQL\\data\\logs\\pg11\\"
+
+	files, err := ioutil.ReadDir(dir)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	data, err := ioutil.ReadFile("C:\\PostgreSQL\\data\\logs\\pg11\\" + file.Name())
+	var logInfo []LogInfoParent
 
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+	for _, file := range files {
+		data, err := ioutil.ReadFile(dir + file.Name())
+
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		logInfo = append(logInfo, LogInfoParent{
+			Data:     utils.GetInfoFromLogs(data),
+			DateTime: file.ModTime(),
+		})
 	}
 
-	utils.WriteJSON(w, utils.GetInfoFromLogs(data))
+	utils.WriteJSON(w, logInfo)
 }

@@ -4,6 +4,7 @@ export interface IPostgresInfo {
   pid: number;
   username: string | null;
   query: string | null;
+  query_start: Date | null;
   state: string | null;
   application_name: string | null;
   client_address: string | null;

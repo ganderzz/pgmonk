@@ -49,30 +49,29 @@ func GetMostRecentFileInDir(dirPath string) (os.FileInfo, error) {
 
 //LogInfo information coming from log file
 type LogInfo struct {
-	DateTime time.Time
-	Pid      int
-	Message  string
-	Meta     MetaLogInfo
-	Status   string
+	DateTime time.Time   `json:"date_time,omitempty"`
+	Pid      int         `json:"pid,omitempty"`
+	Message  string      `json:"message,omitempty"`
+	Meta     MetaLogInfo `json:"meta,omitempty"`
+	Status   string      `json:"status,omitempty"`
 }
 
 //MetaLogInfo additional info on a log item
 type MetaLogInfo struct {
-	User   string
-	DB     string
-	App    string
-	Client string
+	User   string `json:"user,omitempty"`
+	DB     string `json:"db,omitempty"`
+	App    string `json:"app,omitempty"`
+	Client string `json:"client,omitempty"`
 }
 
 //GetInfoFromLogs .
 func GetInfoFromLogs(fileData []byte) []LogInfo {
-	s := regexp.MustCompile("([0-9]{4})-([0-9]{2})-([0-9]{2})")
-	formattedData := s.ReplaceAllString(string(fileData), "|^_^| $1-$2-$3")
+	formattedData := DateTimeRegExp.ReplaceAllString(string(fileData), "|^_^| $1-$2-$3")
 	splitData := strings.Split(string(formattedData), "|^_^|")
 
 	var temp []LogInfo
 
-	for i := 1; i < len(splitData)-1; i++ {
+	for i := 1; i < len(splitData); i++ {
 		splitRow := strings.Split(strings.Trim(splitData[i], " "), " ")
 
 		var dateTime time.Time
@@ -81,16 +80,22 @@ func GetInfoFromLogs(fileData []byte) []LogInfo {
 		message := ""
 		status := ""
 
+		// Parse Created DateTime
 		if len(splitRow) >= 3 {
 			dateTimeString := splitRow[0] + " " + splitRow[1] + " " + splitRow[2]
 			dateTime, _ = time.Parse("2006-01-02 15:04:05 MST", dateTimeString)
 		}
 
+		// Parse Process ID
 		if len(splitRow) >= 4 {
-			pidString := strings.Trim(strings.Trim(splitRow[3], "["), "]")
+			pidString := strings.Replace(splitRow[3], "[", "", -1)
+			pidString = strings.Replace(pidString, "]:", "", -1)
+			pidString = strings.Trim(pidString, " ")
+
 			pid, _ = strconv.Atoi(pidString)
 		}
 
+		// Get meta data about the log
 		if len(splitRow) >= 5 {
 			csvMeta := strings.Split(splitRow[5], ",")
 
@@ -120,10 +125,12 @@ func GetInfoFromLogs(fileData []byte) []LogInfo {
 			}
 		}
 
+		// Get the log status
 		if len(splitRow) >= 6 {
 			status = strings.Replace(splitRow[6], ":", "", -1)
 		}
 
+		// Get the log message
 		if len(splitRow) >= 7 {
 			message = strings.Trim(strings.Join(splitRow[7:], " "), " ")
 		}
@@ -139,3 +146,8 @@ func GetInfoFromLogs(fileData []byte) []LogInfo {
 
 	return temp
 }
+
+/* --- RegExp --- */
+
+//DateTimeRegExp parses datetime values at a beginning of the line
+var DateTimeRegExp = regexp.MustCompile("(?m)^([0-9]{4})-([0-9]{2})-([0-9]{2})")

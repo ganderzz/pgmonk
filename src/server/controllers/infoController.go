@@ -3,6 +3,7 @@ package controllers
 import (
 	"github/com/ganderzz/pgmonk/src/server/utils"
 	"net/http"
+	"time"
 
 	"github.com/jmoiron/sqlx"
 
@@ -19,6 +20,7 @@ type PostgresInfo struct {
 	Pid             null.Int    `json:"pid,omitempty"`
 	Usename         null.String `json:"username,omitempty"`
 	Query           null.String `json:"query,omitempty"`
+	QueryStart      time.Time   `json:"query_start,omitempty"`
 	State           null.String `json:"state,omitempty"`
 	ApplicationName null.String `json:"application_name,omitempty"`
 	ClientAddr      null.String `json:"client_address,omitempty"`
@@ -50,6 +52,7 @@ func HandleGetInfo(w http.ResponseWriter, r *http.Request) {
 			application_name as ApplicationName,
 			usename as Usename,
 			query as Query,
+			query_start as QueryStart,
 			state as State,
 			client_addr as ClientAddr,
 			client_hostname as ClientHostname,

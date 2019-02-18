@@ -1,12 +1,17 @@
-export interface IPostgresLog {
-  DateTime: Date;
-  Pid: number;
-  Message: string;
-  Status: string;
-  Meta: {
-    User: string;
-    DB: string;
-    App: string;
-    Client: string;
+export interface IPostgreLogData {
+  date_time: Date;
+  pid: number;
+  message: string;
+  status: string;
+  meta: {
+    user: string;
+    db: string;
+    app: string;
+    client: string;
   };
+}
+
+export interface IPostgresLog {
+  data: IPostgreLogData[];
+  date_time: Date;
 }
