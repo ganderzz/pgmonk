@@ -20,6 +20,7 @@
     "@fortawesome/free-solid-svg-icons": "5.7.2",
     "@fortawesome/react-fontawesome": "0.1.4",
     "@reach/router": "1.2.1",
+    "@types/victory": "^31.0.9",
     "babel-polyfill": "6.26.0",
     "bootstrap": "4.3.1",
     "css-loader": "2.1.0",
@@ -28,7 +29,8 @@
     "react-dom": "16.8.1",
     "react-toastify": "^4.5.2",
     "reactstrap": "7.1.0",
-    "style-loader": "0.23.1"
+    "style-loader": "0.23.1",
+    "victory": "^31.2.0"
   },
   "devDependencies": {
     "@babel/core": "7.2.2",

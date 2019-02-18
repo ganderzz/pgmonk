@@ -1,10 +1,11 @@
 import * as React from "react";
-import { Row, Col, Table, Button, Badge } from "reactstrap";
+import { Row, Col, Button } from "reactstrap";
 import { HTTP } from "../../utils/API";
 import { toast } from "react-toastify";
 import { IPostgresLog } from "../../utils/Interfaces/IPostgresLog";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { LogCard } from "./Components/LogCard";
+import { format } from "date-fns";
 
 interface IProps {
   path?: string;
@@ -58,7 +59,21 @@ export default function Logs({  }: IProps) {
 
         <h3>Logs</h3>
 
-        {info && info.map((item, i) => <LogCard data={item} key={i} />)}
+        {info &&
+          info.map(log => (
+            <React.Fragment key={`${log.date_time}`}>
+              <h4
+                style={{
+                  borderTop: "1px solid #F1F1F1",
+                  paddingTop: 10,
+                  marginTop: 20,
+                }}
+              >
+                {format(log.date_time, "MM/DD/YYYY")}
+              </h4>
+              {log.data && log.data.map((p, i) => <LogCard data={p} key={i} />)}
+            </React.Fragment>
+          ))}
       </Col>
     </Row>
   );
