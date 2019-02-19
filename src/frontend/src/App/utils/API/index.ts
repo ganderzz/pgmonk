@@ -1,5 +1,7 @@
 import { IPostgresInfo } from "../Interfaces/IPostgresInfo";
 import { IPostgresLog } from "../Interfaces/IPostgresLog";
+import { IDatabase } from "../Interfaces/IDatabase";
+import { ITable } from "../Interfaces/ITable";
 
 class API {
   private fetch: <T>(url: string, options?: RequestInit) => Promise<T>;
@@ -53,6 +55,16 @@ class API {
 
   public getPostgresLogs = () => {
     return this.fetch<IPostgresLog[]>(`logs`, { method: "GET" });
+  };
+
+  public getDatabases = () => {
+    return this.fetch<IDatabase[]>(`databases`, { method: "GET" });
+  };
+
+  public getTable = (name: string) => {
+    return this.fetch<ITable>(`databases/${encodeURIComponent(name)}`, {
+      method: "GET",
+    });
   };
 }
 

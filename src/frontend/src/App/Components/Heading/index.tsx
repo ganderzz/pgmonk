@@ -3,7 +3,7 @@ import * as React from "react";
 interface IProps {
   heading?: string;
   indicateEmpty?: boolean;
-  children: React.ReactNode;
+  children?: React.ReactNode | string | number | null;
 }
 
 export function Heading({ heading, indicateEmpty = false, children }: IProps) {
@@ -15,8 +15,8 @@ export function Heading({ heading, indicateEmpty = false, children }: IProps) {
         <sub
           style={{
             display: "block",
-            color: "#888",
             lineHeight: "1rem",
+            opacity: 0.7,
           }}
         >
           {heading}
@@ -24,7 +24,7 @@ export function Heading({ heading, indicateEmpty = false, children }: IProps) {
       )}{" "}
       <h6
         style={{
-          fontSize: "1.2rem",
+          fontSize: "1.5rem",
           fontWeight: 400,
           ...(isEmpty ? { fontStyle: "italic" } : {}),
         }}

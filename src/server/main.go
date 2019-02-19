@@ -1,9 +1,11 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"github/com/ganderzz/pgmonk/src/server/controllers"
 	"github/com/ganderzz/pgmonk/src/server/middleware"
+	"github/com/ganderzz/pgmonk/src/server/utils"
 	"log"
 	"net/http"
 	"time"
@@ -17,15 +19,23 @@ import (
 var LogPath = "C:\\PostgreSQL\\data\\logs\\pg11"
 
 const serverPath = "localhost:5000"
-const connectionString = "application_name=PgMonk user=postgres password=test dbname=postgres sslmode=disable"
 
 func main() {
-	controllers.ConnectionString = connectionString
+	userArg := flag.String("user", "postgres", "Database user")
+	passwordArg := flag.String("password", "test", "Database password")
+	databaseArg := flag.String("db", "postgres", "Database")
+	hostArg := flag.String("host", "localhost", "Host")
+
+	flag.Parse()
+
+	controllers.ConnectionString = utils.MakeConnectionString(*userArg, *passwordArg, *databaseArg, *hostArg)
 
 	r := mux.NewRouter()
 
 	r.HandleFunc("/info", controllers.HandleGetInfo).Methods("GET")
 	r.HandleFunc("/logs", controllers.HandleGetLogs).Methods("GET")
+	r.HandleFunc("/databases", controllers.HandleGetDatabases).Methods("GET")
+	r.HandleFunc("/databases/{name}", controllers.HandleGetDatabase).Methods("GET")
 
 	r.Use(middleware.IsOriginValid)
 	r.Use(middleware.CorsMiddleware)

@@ -147,6 +147,11 @@ func GetInfoFromLogs(fileData []byte) []LogInfo {
 	return temp
 }
 
+//MakeConnectionString creates a connection string
+func MakeConnectionString(user string, password string, db string, host string) string {
+	return "application_name=PgMonk user=" + user + " password=" + password + " dbname=" + db + " host=" + host + " sslmode=disable"
+}
+
 /* --- RegExp --- */
 
 //DateTimeRegExp parses datetime values at a beginning of the line
