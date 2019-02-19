@@ -11,6 +11,7 @@ const { Spinner } = require("reactstrap");
 import { Router, Link } from "@reach/router";
 import Dashboard from "./Pages/Dashboard";
 import Logs from "./Pages/Logs";
+import Databases from "./Pages/Databases/Databases";
 
 const isPartiallyActive = ({ isCurrent }) => {
   return isCurrent
@@ -53,6 +54,12 @@ export default function App() {
           </NavItem>
 
           <NavItem>
+            <NavLink tag={Link} getProps={isPartiallyActive} to="/databases">
+              Databases
+            </NavLink>
+          </NavItem>
+
+          <NavItem>
             <NavLink tag={Link} getProps={isPartiallyActive} to="/logs">
               Logs
             </NavLink>
@@ -60,11 +67,14 @@ export default function App() {
         </Nav>
       </Navbar>
 
-      <Container style={{ marginTop: 20, maxWidth: "90%" }}>
+      <Container
+        style={{ height: "calc(100% - 52px)", margin: 0, maxWidth: "100%" }}
+      >
         <React.Suspense fallback={<Spinner style={{ marginTop: 10 }} />}>
           <Router>
             <Dashboard path="/" />
             <Logs path="/logs" />
+            <Databases path="/databases" />
           </Router>
         </React.Suspense>
       </Container>
