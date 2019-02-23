@@ -30,26 +30,22 @@ export function useDatabaseInfoFetcher() {
     return HTTP.getDatabases()
       .then(dbs => {
         const groupedDbs = dbs.reduce((accu, item) => {
-          let obj = {
-            [item.table_catalog]: {
-              ...(accu[item.table_catalog] || {}),
-              [item.table_catalog]: {
-                ...(accu[item.table_schema] || {}),
-                [item.table_schema]: [],
-              },
-            },
+          const currentTableCatalog = accu[item.table_catalog];
+          const tableNames = [
+            ...((currentTableCatalog &&
+              currentTableCatalog[item.table_schema]) ||
+              []),
+            item.table_name,
+          ];
+
+          const schemas = {
+            ...(currentTableCatalog || {}),
+            [item.table_schema]: tableNames,
           };
 
-          if (item.table_name) {
-            obj[item.table_catalog][item.table_schema] = [
-              ...(obj[item.table_catalog][item.table_schema] || []),
-              item.table_name,
-            ];
-          }
-
           return {
-            ...accu,
-            ...obj,
+            ...(accu || {}),
+            [item.table_catalog]: schemas,
           };
         }, {});
 
@@ -58,7 +54,7 @@ export function useDatabaseInfoFetcher() {
       })
       .catch(response => {
         setLoading(false);
-        toast.error(`${response}`);
+        toast.error(response.message);
 
         return Promise.reject();
       });
@@ -96,7 +92,7 @@ function useTableInfoFetch(props: IProps & IRouterProps) {
       })
       .catch(response => {
         setLoading(false);
-        toast.error(`${response}`);
+        toast.error(response.message);
 
         return Promise.reject();
       });

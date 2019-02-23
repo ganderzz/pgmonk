@@ -28,8 +28,8 @@ function parseChildren(
 
       return (
         <Tree
-          header={key}
           key={key}
+          header={key}
           open={activeTableInCatagory.length > 0}
           activeItem={activeItem}
           onItemClick={onItemClick}
