@@ -28,3 +28,5 @@ Frontend:
 #### Screenshots
 
 ![Dashboard Screenshot](./media/dashboard.PNG)
+![Database Screenshot](./media/databases.PNG)
+![Logs Screenshot](./media/logs.PNG)

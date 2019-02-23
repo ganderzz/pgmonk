@@ -36,6 +36,7 @@ func main() {
 	r.HandleFunc("/logs", controllers.HandleGetLogs).Methods("GET")
 	r.HandleFunc("/databases", controllers.HandleGetDatabases).Methods("GET")
 	r.HandleFunc("/databases/{name}", controllers.HandleGetDatabase).Methods("GET")
+	r.HandleFunc("/stats", controllers.HandleStatStatements).Methods("GET")
 
 	r.Use(middleware.IsOriginValid)
 	r.Use(middleware.CorsMiddleware)

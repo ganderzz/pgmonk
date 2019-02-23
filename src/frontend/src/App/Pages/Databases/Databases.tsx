@@ -8,6 +8,9 @@ import { TableDisplay } from "./Components/TableDisplay";
 
 interface IProps {
   path?: string;
+}
+
+interface IRouterProps {
   location: {
     search: string;
     pathname: string;
@@ -68,7 +71,7 @@ export function useDatabaseInfoFetcher() {
   };
 }
 
-function useTableInfoFetch(props: IProps) {
+function useTableInfoFetch(props: IProps & IRouterProps) {
   const [isLoading, setLoading] = React.useState(false);
   const [table, setTable] = React.useState<ITable>({
     deletes: 0,
@@ -106,7 +109,7 @@ function useTableInfoFetch(props: IProps) {
   };
 }
 
-export default function Databases(props: IProps) {
+export function Databases(props: IProps & IRouterProps) {
   const { databases, getDatabases } = useDatabaseInfoFetcher();
   const { table, getTable } = useTableInfoFetch(props);
 
@@ -165,3 +168,6 @@ export default function Databases(props: IProps) {
     </div>
   );
 }
+
+//@todo: fix typings so we don't have to nest functions
+export default (props: IProps) => Databases(props as any);

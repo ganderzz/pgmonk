@@ -2,8 +2,9 @@ import { IPostgresInfo } from "../Interfaces/IPostgresInfo";
 import { IPostgresLog } from "../Interfaces/IPostgresLog";
 import { IDatabase } from "../Interfaces/IDatabase";
 import { ITable } from "../Interfaces/ITable";
+import { IStatsStatement } from "../Interfaces/IStatsStatement";
 
-class API {
+export class API {
   private fetch: <T>(url: string, options?: RequestInit) => Promise<T>;
 
   constructor() {
@@ -63,6 +64,12 @@ class API {
 
   public getTable = (name: string) => {
     return this.fetch<ITable>(`databases/${encodeURIComponent(name)}`, {
+      method: "GET",
+    });
+  };
+
+  public getStatsStatement = () => {
+    return this.fetch<IStatsStatement[]>(`stats`, {
       method: "GET",
     });
   };

@@ -69,3 +69,41 @@ func HandleGetInfo(w http.ResponseWriter, r *http.Request) {
 
 	utils.WriteJSON(w, output)
 }
+
+//StatStatement .
+type StatStatement struct {
+	AverageTime  float32 `json:"average_time,omitempty"`
+	DatabaseName string  `json:"database_name,omitempty"`
+	Query        string  `json:"query,omitempty"`
+}
+
+//HandleStatStatements .
+func HandleStatStatements(w http.ResponseWriter, r *http.Request) {
+	db, err := sqlx.Open("postgres", ConnectionString)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	defer db.Close()
+
+	output := []StatStatement{}
+	err = db.Select(&output, `
+		SELECT 
+			(total_time/calls) as AverageTime, 
+			query as Query,
+			datname as DatabaseName
+		FROM pg_stat_statements 
+		LEFT JOIN pg_database db on db.oid = dbid
+		ORDER BY AverageTime DESC 
+		LIMIT 50
+	`)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	utils.WriteJSON(w, output)
+}
