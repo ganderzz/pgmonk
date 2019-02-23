@@ -22,7 +22,7 @@ func HandleGetDatabases(w http.ResponseWriter, r *http.Request) {
 	db, err := sqlx.Open("postgres", ConnectionString)
 
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		utils.WriteJSONError(w, err)
 		return
 	}
 
@@ -30,16 +30,21 @@ func HandleGetDatabases(w http.ResponseWriter, r *http.Request) {
 
 	var output []Database
 	err = db.Select(&output,
-		`select 
+		`SELECT 
 			table_catalog as TableCatalog, 
 			table_schema as TableSchema, 
 			table_name as TableName, 
 			table_type as TableType
 		FROM information_schema.tables
+		WHERE table_schema <> 'pg_catalog' 
+			AND 
+				table_schema <> 'information_schema'
+			AND
+				table_type <> 'VIEW'
 		ORDER BY table_type`)
 
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		utils.WriteJSONError(w, err)
 		return
 	}
 
@@ -64,7 +69,7 @@ func HandleGetDatabase(w http.ResponseWriter, r *http.Request) {
 	db, err := sqlx.Open("postgres", ConnectionString)
 
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		utils.WriteJSONError(w, err)
 		return
 	}
 
@@ -91,7 +96,7 @@ func HandleGetDatabase(w http.ResponseWriter, r *http.Request) {
 	`, tableName)
 
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		utils.WriteJSONError(w, err)
 		return
 	}
 

@@ -25,6 +25,27 @@ func WriteJSON(writer http.ResponseWriter, obj interface{}) {
 	writer.Write(json)
 }
 
+//ErrorResponse .
+type ErrorResponse struct {
+	Message string `json:"message"`
+}
+
+//WriteJSONError .
+func WriteJSONError(writer http.ResponseWriter, err error) {
+	json, err := json.Marshal(ErrorResponse{
+		Message: err.Error(),
+	})
+
+	if err != nil {
+		http.Error(writer, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	writer.Header().Set("Content-Type", "application/json")
+	writer.WriteHeader(http.StatusInternalServerError)
+	writer.Write(json)
+}
+
 //GetMostRecentFileInDir .
 func GetMostRecentFileInDir(dirPath string) (os.FileInfo, error) {
 	files, err := ioutil.ReadDir(dirPath)

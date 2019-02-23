@@ -10,17 +10,22 @@ export class API {
   constructor() {
     const baseURL = `http://localhost:5000/`;
 
-    this.fetch = <T>(url: string, options?: RequestInit) =>
-      fetch(baseURL + url, {
-        mode: "cors",
-        ...(options || {}),
-      }).then(response => {
-        if (response.ok) {
-          return response.json();
+    this.fetch = async <T>(url: string, options?: RequestInit) => {
+      try {
+        const data = await fetch(baseURL + url, {
+          mode: "cors",
+          ...(options || {}),
+        });
+
+        const jsonData = await data.json();
+
+        if (!data.ok) {
+          return Promise.reject(jsonData as { message: string });
         }
 
-        return Promise.reject(response.text());
-      });
+        return jsonData;
+      } catch {}
+    };
   }
 
   private static toQueryString(query?: { [key: string]: any }): string {
