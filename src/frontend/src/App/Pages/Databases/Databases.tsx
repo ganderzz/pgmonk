@@ -125,6 +125,8 @@ export function Databases(props: IProps & IRouterProps) {
         <Col
           xs={4}
           md={3}
+          lg={2}
+          xl={2}
           style={{
             background: "#F1F1F1",
             borderRight: "1px solid #DDD",
@@ -157,7 +159,7 @@ export function Databases(props: IProps & IRouterProps) {
             })}
         </Col>
 
-        <Col xs={8} md={9} style={{ padding: 20 }}>
+        <Col xs={8} md={9} lg={10} xl={10} style={{ padding: 20 }}>
           {table && <TableDisplay data={table} />}
         </Col>
       </Row>

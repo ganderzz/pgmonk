@@ -78,6 +78,17 @@ export class API {
       method: "GET",
     });
   };
+
+  public analyzeQuery = (query: string) => {
+    return this.fetch<string[]>(`analyze`, {
+      method: "POST",
+      body: JSON.stringify(query)
+        .replace(/\\n/g, " ")
+        .replace(/\\t/g, " ")
+        .replace(/"$/g, "")
+        .replace(/^"/g, ""),
+    });
+  };
 }
 
 export const HTTP = new API();

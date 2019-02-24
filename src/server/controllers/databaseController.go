@@ -1,8 +1,12 @@
 package controllers
 
 import (
-	"github/com/ganderzz/pgmonk/src/server/utils"
+	"errors"
+	"github/com/ganderzz/pgmonk/utils"
+	"io/ioutil"
 	"net/http"
+	"regexp"
+	"strings"
 
 	"github.com/gorilla/mux"
 	"github.com/jmoiron/sqlx"
@@ -102,3 +106,66 @@ func HandleGetDatabase(w http.ResponseWriter, r *http.Request) {
 
 	utils.WriteJSON(w, output)
 }
+
+//HandleExplainQuery Analyze a query
+func HandleExplainQuery(w http.ResponseWriter, r *http.Request) {
+	db, err := sqlx.Open("postgres", ConnectionString)
+
+	if err != nil {
+		utils.WriteJSONError(w, err)
+		return
+	}
+
+	defer db.Close()
+	defer r.Body.Close()
+
+	body, err := ioutil.ReadAll(r.Body)
+
+	if err != nil {
+		utils.WriteJSONError(w, err)
+		return
+	}
+
+	if len(body) == 0 {
+		utils.WriteJSONError(w, errors.New("No body given"))
+		return
+	}
+
+	var output []string
+	var query string
+	var args []interface{}
+
+	if analyseExplainRegExp.Match(body) {
+		//@TODO: Fix SQL injection issues
+		query, args, err = sqlx.In(string(body))
+	} else {
+		//@TODO: Fix SQL injection issues
+		query, args, err = sqlx.In(`explain analyse ` + string(body))
+	}
+
+	if err != nil {
+		utils.WriteJSONError(w, err)
+		return
+	}
+
+	err = db.Select(&output, query, args...)
+
+	if err != nil {
+		errorMessage := err.Error()
+
+		if strings.Index(errorMessage, "syntax error") >= 0 {
+			err = errors.New("Cannot analyze this query")
+		}
+
+		if strings.Index(errorMessage, "there is no parameter") >= 0 {
+			err = errors.New("Cannot analyze query containing prepared statement")
+		}
+
+		utils.WriteJSONError(w, err)
+		return
+	}
+
+	utils.WriteJSON(w, output)
+}
+
+var analyseExplainRegExp = regexp.MustCompile("(?i)^(explain analyse | explain)")

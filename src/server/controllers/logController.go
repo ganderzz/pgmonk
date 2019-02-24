@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"github/com/ganderzz/pgmonk/src/server/utils"
+	"github/com/ganderzz/pgmonk/utils"
 	"io/ioutil"
 	"net/http"
 	"time"
@@ -20,7 +20,7 @@ func HandleGetLogs(w http.ResponseWriter, r *http.Request) {
 	files, err := ioutil.ReadDir(dir)
 
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		utils.WriteJSONError(w, err)
 		return
 	}
 
@@ -30,7 +30,7 @@ func HandleGetLogs(w http.ResponseWriter, r *http.Request) {
 		data, err := ioutil.ReadFile(dir + file.Name())
 
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			utils.WriteJSONError(w, err)
 			return
 		}
 

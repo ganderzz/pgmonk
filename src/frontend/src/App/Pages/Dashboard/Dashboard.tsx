@@ -37,8 +37,6 @@ export default function Main(props: IProps) {
     isRunningPolling ? 20_000 : null
   );
 
-  console.log(stats);
-
   return (
     <>
       <Row>
@@ -48,8 +46,7 @@ export default function Main(props: IProps) {
             style={{ marginTop: 10 }}
             disabled={isLoading}
           >
-            <FontAwesomeIcon icon="sync" spin={isLoading} />{" "}
-            {isLoading ? "Refreshing..." : "Refresh"}
+            <FontAwesomeIcon icon="sync" spin={isLoading} /> Refresh
           </Button>
         </Col>
       </Row>
@@ -72,7 +69,7 @@ export default function Main(props: IProps) {
               : "Show Query Execution"}
           </Button>
 
-          <div style={{ maxHeight: 800, overflow: "auto" }}>
+          <div>
             <Accordion isOpen={isRecentQueriesShowing}>
               {stats &&
                 stats.map((item, i) => (
@@ -81,8 +78,8 @@ export default function Main(props: IProps) {
                     style={{
                       padding: 20,
                       marginTop: 10,
-                      marginRight: 0,
-                      marginLeft: 0,
+                      marginRight: 10,
+                      marginLeft: 10,
                       boxShadow: "rgba(130, 130, 130, 0.3) 1px 2px 15px",
                     }}
                   >
