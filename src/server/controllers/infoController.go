@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"github/com/ganderzz/pgmonk/src/server/utils"
+	"github/com/ganderzz/pgmonk/utils"
 	"net/http"
 	"time"
 
@@ -34,7 +34,7 @@ func HandleGetInfo(w http.ResponseWriter, r *http.Request) {
 	db, err := sqlx.Open("postgres", ConnectionString)
 
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		utils.WriteJSONError(w, err)
 		return
 	}
 
@@ -63,7 +63,7 @@ func HandleGetInfo(w http.ResponseWriter, r *http.Request) {
 		ORDER BY query_start DESC NULLS LAST`, backendType)
 
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		utils.WriteJSONError(w, err)
 		return
 	}
 
@@ -82,7 +82,7 @@ func HandleStatStatements(w http.ResponseWriter, r *http.Request) {
 	db, err := sqlx.Open("postgres", ConnectionString)
 
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		utils.WriteJSONError(w, err)
 		return
 	}
 
@@ -101,7 +101,7 @@ func HandleStatStatements(w http.ResponseWriter, r *http.Request) {
 	`)
 
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		utils.WriteJSONError(w, err)
 		return
 	}
 

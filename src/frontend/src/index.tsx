@@ -7,6 +7,8 @@ import {
   faSync,
   faLock,
   faChevronRight,
+  faInfoCircle,
+  faMinus,
 } from "@fortawesome/free-solid-svg-icons";
 import App from "./App";
 import { ToastContainer } from "react-toastify";
@@ -15,7 +17,15 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "react-toastify/dist/ReactToastify.min.css";
 
 window.onload = () => {
-  library.add(faChevronDown, faChevronUp, faChevronRight, faSync, faLock);
+  library.add(
+    faChevronDown,
+    faChevronUp,
+    faChevronRight,
+    faSync,
+    faLock,
+    faInfoCircle,
+    faMinus
+  );
 
   render(
     <>

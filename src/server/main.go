@@ -3,9 +3,9 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github/com/ganderzz/pgmonk/src/server/controllers"
-	"github/com/ganderzz/pgmonk/src/server/middleware"
-	"github/com/ganderzz/pgmonk/src/server/utils"
+	"github/com/ganderzz/pgmonk/controllers"
+	"github/com/ganderzz/pgmonk/middleware"
+	"github/com/ganderzz/pgmonk/utils"
 	"log"
 	"net/http"
 	"time"
@@ -18,7 +18,7 @@ import (
 //LogPath the local path to the Postgres log files
 var LogPath = "C:\\PostgreSQL\\data\\logs\\pg11"
 
-const serverPath = "localhost:5000"
+const serverPath = "127.0.0.1:5000"
 
 func main() {
 	userArg := flag.String("user", "postgres", "Database user")
@@ -37,6 +37,7 @@ func main() {
 	r.HandleFunc("/databases", controllers.HandleGetDatabases).Methods("GET")
 	r.HandleFunc("/databases/{name}", controllers.HandleGetDatabase).Methods("GET")
 	r.HandleFunc("/stats", controllers.HandleStatStatements).Methods("GET")
+	r.HandleFunc("/analyze", controllers.HandleExplainQuery).Methods("POST")
 
 	r.Use(middleware.IsOriginValid)
 	r.Use(middleware.CorsMiddleware)
